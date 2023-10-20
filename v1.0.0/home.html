@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Управление TemaBot</title>
+    <link rel="stylesheet" type="text/css" href="bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script defer type="text/javascript" src="jquery-3.4.1.min.js"></script>
+    <script defer type="text/javascript" src="main.js"></script>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="column is-two-thirds">
+          <h1 class="title">Управление TemaBot</h1>
+          <hr><br>
+          <div>
+            <h2 class="title is-2">Запустить бота:</h2>
+            <h3>Выберите команду:</h3>
+            <div class="field is-grouped">
+              <p class="control">
+                <button class="button is-primary" data-type="1">Запустить</button>
+                <button class="button is-primary" data-type="2">Остановить</button>
+              </p>
+            </div>
+          </div>
+          <br><br>
+          <div>
+            <h2 class="title is-2">Статус запуска</h2>
+            <br>
+            <table class="table is-fullwidth">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Status</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody id="tasks">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="footer">
+      <div class="content container">
+        <hr>
+        <p><small><span class="text-muted">©<a>Artem Pilipenko</a></span></small></p>
+      </div>
+    </footer>
+  </body>
+</html>
