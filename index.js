@@ -108,7 +108,7 @@ class Checkbox {
         checkbox.setAttribute('type', 'checkbox');
         checkbox.setAttribute('name', name);
         checkbox.setAttribute('checked', true);
-        checkbox.setAttribute('onchange','toggleFeature(this)' )
+        checkbox.setAttribute('onchange','changeCheckbox(this)' )
 
         label.append(checkbox)
         label.append(name)
@@ -119,7 +119,7 @@ class Checkbox {
     }
 }
 
-function toggleFeature(checkbox) {
+function changeCheckbox(checkbox) {
     console.log(checkbox.name, checkbox.checked) 
 }
 
