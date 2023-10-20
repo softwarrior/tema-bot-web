@@ -16,63 +16,74 @@ class Admin {
         header.innerHTML = "Управление TemaBot"
         element.append(header);
 
-        const features_names_to_create = ['Фича 1', 'Фича 2', 'Фича 3', 'Фича 4']
-        const features = new Features(features_names_to_create)
+        const features_names = ['Фича 1', 'Фича 2', 'Фича 3', 'Фича 4']
+        const features = new Features(features_names)
         element.append(features.element)
 
-        const h4 = document.createElement('h4');
-        h4.innerHTML = "Выберите команду:"
-        element.append(h4);
+        const button1 = new Button("Запустить")
+        const button2 = new Button("Остановить")
+        const commands = new Commands([button1, button2]);
+        element.append(commands.element);
 
-        const menuPoint1 = new MenuPoint("Запустить")
-        const menuPoint2 = new MenuPoint("Остановить")
-        const menu = new Menu([menuPoint1, menuPoint2]);
-        element.append(menu.element);
-
-        const status = document.createElement('h5');
-        status.append("Статус запуска:")
-        const status_span = document.createElement('span')
-        status_span.classList.add('status')
-        status_span.innerHTML = 'незапущен'
-        status.append(status_span)
-        element.append(status);
+        const status = new Status()
+        element.append(status.element);
 
         this.element = element
+    }
+}
+
+class Status {
+    constructor () {
+        const element = document.createElement('div');
+        const h4 = document.createElement('h4');
+        h4.append("Статус запуска:")
+
+        const span = document.createElement('span')
+        span.classList.add('status')
+        span.innerHTML = 'незапущен'
+        h4.append(span)
+
+        element.append(h4)
+        
+        this.element = element;
     }
 }
 
 class Features {
     constructor (names) {
         const element = document.createElement('div');
-        const h_fitures = document.createElement('h3');
-        h_fitures.innerHTML = "Выберите фичу:"
-        element.append(h_fitures);
+        const h3 = document.createElement('h3');
+        h3.innerHTML = "Выберите фичу:"
+        element.append(h3);
         names.forEach(fiture_name => {
-            const checkbox = new MenuCheckbox(fiture_name);
+            const checkbox = new Checkbox(fiture_name);
             element.append(checkbox.element);
         });
 
         this.element = element;
     }
 }
-class Menu {
-    constructor (menuPoints) {
-        const element = document.createElement('div');
-        element.classList.add('menu');
 
-        menuPoints.forEach((menuPoint) => {
-            element.append(menuPoint.element)
+class Commands {
+    constructor (buttons) {
+        const element = document.createElement('div');
+        const h4 = document.createElement('h4');
+        h4.innerHTML = "Выберите команду:"
+        element.append(h4);
+
+        buttons.forEach((button) => {
+            element.append(button.element)
         });
 
         this.element = element;
     }
 }
 
-class MenuPoint {
+class Button {
     constructor (name) {
         const element = document.createElement('button');
         element.innerHTML = name;
-        element.classList.add('menuPoint');
+        element.classList.add('button');
         element.addEventListener(
             'click',
             () => {
@@ -88,9 +99,9 @@ class MenuPoint {
     }
 }
 
-class MenuCheckbox {
+class Checkbox {
     constructor (name) {
-        const div = document.createElement('div');
+        const element = document.createElement('div');
         const label = document.createElement('label');
         
         const checkbox = document.createElement('input');
@@ -102,13 +113,14 @@ class MenuCheckbox {
         label.append(checkbox)
         label.append(name)
         
-        div.append(label) 
+        element.append(label) 
 
-        this.element = div;
+        this.element = element;
     }
 }
-function toggleFeature(menuCheckbox) {
-    console.log(menuCheckbox.name, menuCheckbox.checked) 
+
+function toggleFeature(checkbox) {
+    console.log(checkbox.name, checkbox.checked) 
 }
 
 const admin = new Admin();

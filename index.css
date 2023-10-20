@@ -15,12 +15,7 @@ html, body {
     padding: 0 10px 0 10px;
 }
 
-.menu {
-    display: flex;
-    flex-direction: row;
-}
-
-.menuPoint {
+.button {
     border-radius: 8px;
     border: 2px solid var(--color-menu-point1);
     background-color: var(--color-menu-point2);
@@ -31,7 +26,7 @@ html, body {
     width: 85px;
 }
 
-.menuPoint:hover {
+.button:hover {
     border-color: var(--color-menu-point2);;
     background-color: var(--color-menu-point1);
     color: var(--color-menu-point2);
