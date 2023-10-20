@@ -1,11 +1,39 @@
 "use strict";
 
-const FEATURE_ID = {
-    FEATURE_1: 1,
-    FEATURE_2: 2,
-    FEATURE_3: 3,
-    FEATURE_4: 4
-}
+const FEATURES = [
+    {
+        name: 'Фича 1',
+        uid: 1
+    },
+    {
+        name: 'Фича 2',
+        uid: 2
+    },
+    {
+        name: 'Фича 3',
+        uid: 3
+    },
+    {
+        name: 'Фича 4',
+        uid: 4
+    },
+]
+
+const COMMANDS = [
+    {
+        name: 'Запустить',
+        uid: 1
+    },
+    {
+        name: 'Остановить',
+        uid: 2
+    },
+]
+
+const STATUSES = [
+    "STOPPED",
+    "STARTED", 
+]
 
 class Admin {
     constructor () {
@@ -16,16 +44,13 @@ class Admin {
         header.innerHTML = "Управление TemaBot"
         element.append(header);
 
-        const features_names = ['Фича 1', 'Фича 2', 'Фича 3', 'Фича 4']
-        const features = new Features(features_names)
+        const features = new Features(FEATURES)
         element.append(features.element)
 
-        const button1 = new Button("Запустить")
-        const button2 = new Button("Остановить")
-        const commands = new Commands([button1, button2]);
+        const commands = new Commands(COMMANDS);
         element.append(commands.element);
 
-        const status = new Status()
+        const status = new Status(STATUSES[0])
         element.append(status.element);
 
         this.element = element
@@ -33,14 +58,14 @@ class Admin {
 }
 
 class Status {
-    constructor () {
+    constructor (name) {
         const element = document.createElement('div');
         const h4 = document.createElement('h4');
         h4.append("Статус запуска:")
 
         const span = document.createElement('span')
         span.classList.add('status')
-        span.innerHTML = 'незапущен'
+        span.append(name)
         h4.append(span)
 
         element.append(h4)
@@ -50,13 +75,13 @@ class Status {
 }
 
 class Features {
-    constructor (names) {
+    constructor (features) {
         const element = document.createElement('div');
         const h3 = document.createElement('h3');
         h3.innerHTML = "Выберите фичу:"
         element.append(h3);
-        names.forEach(fiture_name => {
-            const checkbox = new Checkbox(fiture_name);
+        features.forEach(({ name, uid }) => {
+            const checkbox = new Checkbox(name, uid);
             element.append(checkbox.element);
         });
 
@@ -65,13 +90,14 @@ class Features {
 }
 
 class Commands {
-    constructor (buttons) {
+    constructor (commands) {
         const element = document.createElement('div');
         const h4 = document.createElement('h4');
         h4.innerHTML = "Выберите команду:"
         element.append(h4);
 
-        buttons.forEach((button) => {
+        commands.forEach(({ name, uid }) => {
+            const button = new Button(name, uid)
             element.append(button.element)
         });
 
@@ -80,9 +106,9 @@ class Commands {
 }
 
 class Button {
-    constructor (name) {
+    constructor (name, uid) {
         const element = document.createElement('button');
-        element.innerHTML = name;
+        element.append(name);
         element.classList.add('button');
         element.addEventListener(
             'click',
@@ -92,21 +118,34 @@ class Button {
         ) 
         this.element = element;
         this.name = name
+        this.uid = uid
     }
 
     clickHandler () {
         console.log("click", this.name);
+        const body = { type: this.uid }
+        fetch(`/tasks/`, { 
+            method: "POST",
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(result => {
+            getStatus(result.task_id);    
+        })
+        .catch((error) => console.log(error)); 
     }
 }
 
 class Checkbox {
-    constructor (name) {
+    constructor (name, uid) {
         const element = document.createElement('div');
         const label = document.createElement('label');
         
         const checkbox = document.createElement('input');
         checkbox.setAttribute('type', 'checkbox');
         checkbox.setAttribute('name', name);
+        checkbox.setAttribute('uid', uid);
         checkbox.setAttribute('checked', true);
         checkbox.setAttribute('onchange','changeCheckbox(this)' )
 
@@ -127,3 +166,33 @@ const admin = new Admin();
 document
     .getElementById('root')
     .append(admin.element)
+
+function getStatus(taskID) {
+    fetch(`/tasks/${taskID}/`, { 
+        method: "GET"
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        if (result.task_status === 'SUCCESS' || result.task_status === 'FAILURE') {
+            return
+        }
+        setTimeout(function() {
+            getStatus(result.task_id);
+        }, 1000);
+
+    })
+    .catch((error) => console.log(error)); 
+}
+
+function ready(callback) {
+    if (document.readyState !== 'loading') {
+        callback();
+        return;
+    }
+    document.addEventListener('DOMContentLoaded', callback);
+}
+
+ready(function() {
+    console.log('document ready')
+})
