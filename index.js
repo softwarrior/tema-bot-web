@@ -3,30 +3,34 @@
 const FEATURES = [
     {
         name: 'Фича 1',
-        uid: 1
+        uid: '1',
+        available: 'true'
     },
     {
         name: 'Фича 2',
-        uid: 2
+        uid: '2',
+        available: 'true'
     },
     {
         name: 'Фича 3',
-        uid: 3
+        uid: '3',
+        available: 'true'
     },
     {
         name: 'Фича 4',
-        uid: 4
+        uid: '4',
+        available: 'true'
     },
 ]
 
 const COMMANDS = [
     {
         name: 'Запустить',
-        uid: 1
+        uid: '1'
     },
     {
         name: 'Остановить',
-        uid: 2
+        uid: '2'
     },
 ]
 
@@ -54,6 +58,11 @@ class Admin {
         element.append(status.element);
 
         this.element = element
+        this.status = status
+    }
+
+    setStatusName(name) {
+        this.status.setName(name)
     }
 }
 
@@ -65,12 +74,17 @@ class Status {
 
         const span = document.createElement('span')
         span.classList.add('status')
-        span.append(name)
+        span.innerHTML = name
         h4.append(span)
 
         element.append(h4)
         
         this.element = element;
+        this.span = span;
+    }
+
+    setName(name) {
+        this.span.innerHTML = name
     }
 }
 
@@ -110,30 +124,11 @@ class Button {
         const element = document.createElement('button');
         element.append(name);
         element.classList.add('button');
-        element.addEventListener(
-            'click',
-            () => {
-                this.clickHandler();
-            }
-        ) 
-        this.element = element;
-        this.name = name
-        this.uid = uid
-    }
+        element.setAttribute('data-name', name)
+        element.setAttribute('data-uid', uid)
+        element.setAttribute('onclick','clickButton(this)' )
 
-    clickHandler () {
-        console.log("click", this.name);
-        const body = { type: this.uid }
-        fetch(`/tasks/`, { 
-            method: "POST",
-            headers: { 'Content-Type': 'application/json;charset=utf-8' },
-            body: JSON.stringify(body)
-        })
-        .then(response => response.json())
-        .then(result => {
-            getStatus(result.task_id);    
-        })
-        .catch((error) => console.log(error)); 
+        this.element = element;
     }
 }
 
@@ -144,8 +139,8 @@ class Checkbox {
         
         const checkbox = document.createElement('input');
         checkbox.setAttribute('type', 'checkbox');
-        checkbox.setAttribute('name', name);
-        checkbox.setAttribute('uid', uid);
+        checkbox.setAttribute('data-name', name);
+        checkbox.setAttribute('data-uid', uid);
         checkbox.setAttribute('checked', true);
         checkbox.setAttribute('onchange','changeCheckbox(this)' )
 
@@ -158,22 +153,41 @@ class Checkbox {
     }
 }
 
-function changeCheckbox(checkbox) {
-    console.log(checkbox.name, checkbox.checked) 
-}
-
 const admin = new Admin();
 document
     .getElementById('root')
     .append(admin.element)
 
+function changeCheckbox(checkbox) {
+    console.log(checkbox.dataset.name, checkbox.checked, checkbox.dataset.uid)
+    const feature = FEATURES.find((feature) => feature.uid === checkbox.dataset.uid)
+    feature.available = checkbox.checked ? "true" : "false"
+}
+
+function clickButton (button) {
+        console.log("click", button.dataset.name, button.dataset.uid);
+        const data = { command: button.dataset.uid, features: FEATURES}
+        fetch(`/tasks/`, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            admin.setStatusName(result.task_result)
+            getStatus(result.task_id);
+        })
+        .catch((error) => console.log(error));
+}
+
 function getStatus(taskID) {
-    fetch(`/tasks/${taskID}/`, { 
+    const url = `/tasks/${taskID}/`
+    fetch(url, {
         method: "GET"
     })
     .then(response => response.json())
     .then(result => {
-        console.log(result)
+        admin.setStatusName(result.task_result)
         if (result.task_status === 'SUCCESS' || result.task_status === 'FAILURE') {
             return
         }
