@@ -13,6 +13,7 @@ html, body {
     flex-direction: column;
     background: lightgray;
     padding: 0 10px 0 10px;
+    align-items: center;
 }
 
 .button {
