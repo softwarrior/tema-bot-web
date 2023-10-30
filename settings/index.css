@@ -1,0 +1,34 @@
+:root {
+    --color-menu-point1: #e8ecef;
+    --color-menu-point2: #1879da;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+.admin {
+    display: flex;
+    flex-direction: column;
+    background: lightgray;
+    padding: 0 10px 0 10px;
+    align-items: center;
+}
+
+.button {
+    border-radius: 8px;
+    border: 2px solid var(--color-menu-point1);
+    background-color: var(--color-menu-point2);
+    color: var(--color-menu-point1);
+    padding: 5px;
+    cursor: pointer;
+    margin: 10px 5px 10px 5px;
+    width: 85px;
+}
+
+.button:hover {
+    border-color: var(--color-menu-point2);;
+    background-color: var(--color-menu-point1);
+    color: var(--color-menu-point2);
+}
