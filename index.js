@@ -2,25 +2,49 @@
 
 const FEATURES = [
     {
-        name: 'Фича 1',
+        name: 'Помощь',
+        worker: 'HelperWorker',
         uid: '1',
-        available: 'true'
+        available: 'true',
+        readonly: 'true'
     },
     {
-        name: 'Фича 2',
+        name: 'Высказывания',
+        worker: 'FamousWorker',
         uid: '2',
         available: 'true'
     },
     {
-        name: 'Фича 3',
+        name: 'Пословицы',
+        worker: 'ProverbsWorker',
         uid: '3',
         available: 'true'
     },
     {
-        name: 'Фича 4',
+        name: 'Игра в числа',
+        worker: 'NumbersWorker',
         uid: '4',
         available: 'true'
     },
+    {
+        name: 'Игра в города',
+        worker: 'CitiesWorker',
+        uid: '5',
+        available: 'true'
+    },
+    {
+        name: 'Туристическая информация',
+        worker: 'TourismWorker',
+        uid: '6',
+        available: 'true'
+    },
+    {
+        name: 'Эхо на неизвестные команды',
+        worker: 'EchoWorker',
+        uid: '7',
+        available: 'true',
+        readonly: 'true'
+    }
 ]
 
 const COMMANDS = [
@@ -94,8 +118,8 @@ class Features {
         const h3 = document.createElement('h3');
         h3.innerHTML = "Выберите фичу:"
         element.append(h3);
-        features.forEach(({ name, uid }) => {
-            const checkbox = new Checkbox(name, uid);
+        features.forEach(({ name, uid, available, readonly }) => {
+            const checkbox = new Checkbox(name, uid, available, readonly);
             element.append(checkbox.element);
         });
 
@@ -133,7 +157,7 @@ class Button {
 }
 
 class Checkbox {
-    constructor (name, uid) {
+    constructor (name, uid, available, readonly) {
         const element = document.createElement('div');
         const label = document.createElement('label');
         
@@ -141,7 +165,13 @@ class Checkbox {
         checkbox.setAttribute('type', 'checkbox');
         checkbox.setAttribute('data-name', name);
         checkbox.setAttribute('data-uid', uid);
-        checkbox.setAttribute('checked', true);
+        checkbox.setAttribute('data-available', available);
+        if (available === 'true') {
+            checkbox.setAttribute('checked','');
+        }
+        if (readonly === 'true') {
+            checkbox.setAttribute('disabled','');
+        }
         checkbox.setAttribute('onchange','changeCheckbox(this)' )
 
         label.append(checkbox)
