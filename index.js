@@ -1,51 +1,37 @@
 "use strict";
 
-const FEATURES = [
-    {
+const FEATURES = {
+    HelperWorker: {
         name: 'Помощь',
-        worker: 'HelperWorker',
-        uid: '1',
         available: 'true',
         readonly: 'true'
     },
-    {
+    FamousWorker: {
         name: 'Высказывания',
-        worker: 'FamousWorker',
-        uid: '2',
         available: 'true'
     },
-    {
+    ProverbsWorker: {
         name: 'Пословицы',
-        worker: 'ProverbsWorker',
-        uid: '3',
         available: 'true'
     },
-    {
+    NumbersWorker: {
         name: 'Игра в числа',
-        worker: 'NumbersWorker',
-        uid: '4',
         available: 'true'
     },
-    {
+    CitiesWorker: {
         name: 'Игра в города',
-        worker: 'CitiesWorker',
-        uid: '5',
         available: 'true'
     },
-    {
+    TourismWorker: {
         name: 'Туристическая информация',
-        worker: 'TourismWorker',
-        uid: '6',
         available: 'true'
     },
-    {
+    EchoWorker: {
         name: 'Эхо на неизвестные команды',
-        worker: 'EchoWorker',
-        uid: '7',
         available: 'true',
         readonly: 'true'
     }
-]
+}
 
 const COMMANDS = [
     {
@@ -118,11 +104,14 @@ class Features {
         const h3 = document.createElement('h3');
         h3.innerHTML = "Выберите фичу:"
         element.append(h3);
-        features.forEach(({ name, uid, available, readonly }) => {
-            const checkbox = new Checkbox(name, uid, available, readonly);
-            element.append(checkbox.element);
-        });
 
+        Object.entries(features).forEach(([key, value]) => {
+            const { name, available, readonly } = value
+            const checkbox = new Checkbox(name, key, available, readonly);
+            element.append(checkbox.element);
+
+        })
+        
         this.element = element;
     }
 }
