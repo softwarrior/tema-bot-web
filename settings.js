@@ -1,6 +1,6 @@
 "use strict";
 
-import { COMMANDS } from '../costants.js'
+import { COMMANDS } from './costants.js'
 
 const FEATURES = {
     HelperWorker: {
@@ -83,8 +83,12 @@ class Button {
         element.classList.add('button');
         element.setAttribute('data-name', name)
         element.setAttribute('data-uid', uid)
-        element.setAttribute('onclick','clickButton(this)' )
-
+        element.addEventListener(
+            'click',
+            () => {
+                clickButton(this.element);
+            }
+        )
         this.element = element;
     }
 }
@@ -105,7 +109,13 @@ class Checkbox {
         if (readonly === 'true') {
             checkbox.setAttribute('disabled','');
         }
-        checkbox.setAttribute('onchange','changeCheckbox(this)' )
+
+        checkbox.addEventListener(
+            'change',
+            () => {
+                changeCheckbox(checkbox);
+            }
+        )
 
         label.append(checkbox)
         label.append(name)
@@ -128,18 +138,18 @@ function changeCheckbox(checkbox) {
 }
 
 function clickButton (button) {
-        console.log("click", button.dataset.name, button.dataset.uid);
-        const data = { command: button.dataset.uid, features: FEATURES}
-        fetch(`/tasks/`, {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json;charset=utf-8' },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(result => {
-            console.log("result", result)
-        })
-        .catch((error) => console.log(error));
+    console.log("click", button.dataset.name, button.dataset.uid);
+    const data = { command: button.dataset.uid, features: FEATURES}
+    fetch(`/tasks/`, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json;charset=utf-8' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log("result", result)
+    })
+    .catch((error) => console.log(error));
 }
 
 function ready(callback) {

@@ -1,6 +1,6 @@
 "use strict";
 
-import { COMMANDS } from '../costants.js'
+import { COMMANDS } from './costants.js'
 
 const STATUSES = [
     "STOPPED",
@@ -76,8 +76,12 @@ class Button {
         element.classList.add('button');
         element.setAttribute('data-name', name)
         element.setAttribute('data-uid', uid)
-        element.setAttribute('onclick','clickButton(this)' )
-
+        element.addEventListener(
+            'click',
+            () => {
+                clickButton(this.element);
+            }
+        )
         this.element = element;
     }
 }
@@ -90,7 +94,7 @@ document
 
 function clickButton (button) {
         console.log("click", button.dataset.name, button.dataset.uid);
-        const data = { command: button.dataset.uid, features: FEATURES}
+        const data = { command: button.dataset.uid }
         fetch(`/tasks/`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json;charset=utf-8' },
