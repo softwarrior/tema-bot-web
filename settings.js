@@ -2,41 +2,11 @@
 
 import { COMMANDS } from './costants.js'
 
-const FEATURES = {
-    HelperWorker: {
-        name: 'Помощь',
-        available: 'true',
-        readonly: 'true'
-    },
-    FamousWorker: {
-        name: 'Высказывания',
-        available: 'true'
-    },
-    ProverbsWorker: {
-        name: 'Пословицы',
-        available: 'true'
-    },
-    NumbersWorker: {
-        name: 'Игра в числа',
-        available: 'true'
-    },
-    CitiesWorker: {
-        name: 'Игра в города',
-        available: 'true'
-    },
-    TourismWorker: {
-        name: 'Туристическая информация',
-        available: 'true'
-    },
-    EchoWorker: {
-        name: 'Эхо на неизвестные команды',
-        available: 'true',
-        readonly: 'true'
-    }
-}
+let FEATURES = {}
 
 class Admin {
     constructor () {
+    return (async () => {
         const element = document.createElement('div');
         element.classList.add('admin');
         
@@ -44,6 +14,8 @@ class Admin {
         header.innerHTML = "Настройки TemaBot"
         element.append(header);
 
+        FEATURES = await Admin.getFeatures()
+        console.log("!!! FEATURES", FEATURES)
         const features = new Features(FEATURES)
         element.append(features.element)
 
@@ -51,6 +23,22 @@ class Admin {
         element.append(applyButton.element)
 
         this.element = element
+        return this
+    })();
+    }
+
+    static async getFeatures() {
+        const response = await fetch('/settings/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify({})
+        })
+        if (response.ok) {
+           return await response.json();
+        } else {
+            alert("Не получили настройки :( Ошибка HTTP: " + response.status);
+            return {}
+        }
     }
 
     setStatusName(name) {
@@ -126,7 +114,7 @@ class Checkbox {
     }
 }
 
-const admin = new Admin();
+const admin = await new Admin();
 document
     .getElementById('root')
     .append(admin.element)
